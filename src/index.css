@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0A0A0B;
+  --color-surface: #141416;
+  --color-surface-2: #1C1C1F;
+  --color-border: #2A2A2E;
+  --color-accent: #E24B4A;
+  --color-accent-hover: #FF5C5B;
+  --color-green: #1D9E75;
+  --color-blue: #378ADD;
+  --color-amber: #BA7517;
+  --color-text-primary: #F0F0F2;
+  --color-text-secondary: #9090A0;
+  --color-text-muted: #606070;
+
+  --font-syne: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-inter: 'Inter', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0A0A0B;
+  color: #F0F0F2;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #141416;
+}
+::-webkit-scrollbar-thumb {
+  background: #2A2A2E;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E24B4A;
+}
+
+/* Glow utility */
+.glow-red {
+  box-shadow: 0 0 24px rgba(226,75,74,0.25);
+}
+.glow-green {
+  box-shadow: 0 0 24px rgba(29,158,117,0.25);
+}
+.glow-blue {
+  box-shadow: 0 0 24px rgba(55,138,221,0.25);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #F0F0F2 0%, #E24B4A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism card */
+.glass {
+  background: rgba(20, 20, 22, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Score ring */
+.score-ring {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #1C1C1F 25%, #2A2A2E 50%, #1C1C1F 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Upload zone pulse */
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(226,75,74,0.3); }
+  50% { border-color: rgba(226,75,74,0.7); }
+}
+.upload-pulse {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+/* Score bar transition */
+.score-bar-fill {
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
