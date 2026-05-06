@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 function getScoreColor(score) {
-  if (score >= 80) return 'var(--green)'
-  if (score >= 60) return 'var(--blue)'
-  if (score >= 40) return 'var(--amber)'
-  return 'var(--red)'
+  if (score >= 80) return '#1DB87A'
+  if (score >= 60) return '#3D8EE8'
+  if (score >= 40) return '#C07820'
+  return '#E8453C'
 }
 
 export default function MetricCard({ label, score, insight, fix, icon, delay = 0 }) {
@@ -22,34 +22,53 @@ export default function MetricCard({ label, score, insight, fix, icon, delay = 0
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
-      whileHover={{ y: -4, boxShadow: 'var(--shadow-lg)', transition: { duration: 0.2 } }}
-      className="rounded-2xl p-5 flex flex-col gap-4 cursor-default"
-      style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}
+      whileHover={{ y: -3, background: '#18181C', borderColor: '#303038' }}
+      style={{
+        background: '#111114',
+        border: '1px solid #242428',
+        borderRadius: 16,
+        padding: '1.25rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        cursor: 'default',
+        transition: 'all 0.2s ease',
+      }}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{icon}</span>
-          <span className="text-sm font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 18 }}>{icon}</span>
+          <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 13, color: '#EEECEA' }}>
             {label}
           </span>
         </div>
-        <span className="text-xl font-bold" style={{ fontFamily: 'DM Mono, monospace', color }}>
+        <span style={{ fontFamily: 'DM Mono, monospace', fontWeight: 700, fontSize: 20, color }}>
           {score}
         </span>
       </div>
 
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-elevated)' }}>
-        <div className="h-full rounded-full score-bar-fill"
-          style={{ width: `${width}%`, background: `linear-gradient(90deg, ${color}80, ${color})`, boxShadow: `0 0 8px ${color}50` }} />
+      <div style={{ height: 3, borderRadius: 999, background: '#242428', overflow: 'hidden' }}>
+        <div
+          className="score-bar-fill"
+          style={{
+            height: '100%', width: `${width}%`,
+            borderRadius: 999,
+            background: `linear-gradient(90deg, ${color}70, ${color})`,
+            boxShadow: `0 0 8px ${color}50`,
+          }}
+        />
       </div>
 
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{insight}</p>
+      <p style={{ fontSize: 12, color: '#888796', lineHeight: 1.5 }}>{insight}</p>
 
       {fix && (
-        <div className="flex items-start gap-2 p-3 rounded-xl text-xs"
-          style={{ background: 'var(--accent-subtle)', border: '1px solid var(--accent-border)' }}>
-          <span style={{ color: 'var(--accent)' }} className="shrink-0 mt-0.5">⚡</span>
-          <span style={{ color: 'var(--text-secondary)' }}>{fix}</span>
+        <div style={{
+          display: 'flex', gap: 8, padding: '8px 12px', borderRadius: 8,
+          background: 'rgba(232,69,60,0.06)', border: '1px solid rgba(232,69,60,0.12)',
+          fontSize: 11,
+        }}>
+          <span style={{ color: '#E8453C', flexShrink: 0 }}>⚡</span>
+          <span style={{ color: '#888796' }}>{fix}</span>
         </div>
       )}
     </motion.div>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
-function getScoreColor(score) {
-  if (score >= 80) return 'var(--green)'
-  if (score >= 60) return 'var(--blue)'
-  if (score >= 40) return 'var(--amber)'
-  return 'var(--red)'
+function getColor(score) {
+  if (score >= 80) return '#1DB87A'
+  if (score >= 60) return '#3D8EE8'
+  if (score >= 40) return '#C07820'
+  return '#E8453C'
 }
 
 export default function CompetitorChart({ data }) {
@@ -13,60 +13,46 @@ export default function CompetitorChart({ data }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => { const t = setTimeout(() => setMounted(true), 300); return () => clearTimeout(t) }, [])
 
-  const allItems = [
-    ...(competitors || []),
-    { name: 'Your Content', score: virality_score, isYou: true },
-  ].sort((a, b) => b.score - a.score)
+  const allItems = [...(competitors || []), { name: 'Your Content', score: virality_score, isYou: true }].sort((a, b) => b.score - a.score)
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
-      className="rounded-2xl p-6"
-      style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-subtle)' }}>
-          <span className="text-base">📊</span>
-        </div>
-        <h3 className="font-bold text-lg" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>Competitor Benchmark</h3>
+      style={{ background: '#111114', border: '1px solid #242428', borderRadius: 20, padding: '1.75rem' }}>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
+        <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(232,69,60,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>📊</div>
+        <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 16, color: '#EEECEA' }}>Competitor Benchmark</h3>
       </div>
-      <div className="space-y-4">
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {allItems.map((item, i) => {
-          const color = item.isYou ? 'var(--accent)' : getScoreColor(item.score)
-          const targetW = mounted ? `${(item.score / 100) * 100}%` : '0%'
+          const color = item.isYou ? '#E8453C' : getColor(item.score)
           return (
-            <motion.div key={item.name} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.08 }}
-              className="flex items-center gap-4">
-              <div className="w-36 shrink-0 text-right">
-                <span className="text-xs font-medium"
-                  style={{ color: item.isYou ? 'var(--accent)' : 'var(--text-secondary)', fontFamily: item.isYou ? 'DM Mono, monospace' : 'Inter, sans-serif', fontWeight: item.isYou ? 700 : 400 }}>
+            <motion.div key={item.name} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.07 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 130, textAlign: 'right', flexShrink: 0 }}>
+                <span style={{ fontSize: 12, fontWeight: item.isYou ? 700 : 400, fontFamily: item.isYou ? 'DM Mono, monospace' : 'Inter, sans-serif', color: item.isYou ? '#E8453C' : '#888796' }}>
                   {item.name}
                 </span>
               </div>
-              <div className="flex-1 h-7 rounded-full overflow-hidden" style={{ background: 'var(--bg-elevated)' }}>
-                <motion.div className="h-full rounded-full flex items-center justify-end pr-3"
-                  initial={{ width: 0 }} animate={{ width: targetW }} transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1], delay: 0.4 + i * 0.08 }}
-                  style={{
-                    background: item.isYou
-                      ? 'linear-gradient(90deg, var(--accent-hover), var(--accent), #FF6B6A)'
-                      : `linear-gradient(90deg, ${color}60, ${color})`,
-                    boxShadow: item.isYou ? '0 0 12px rgba(226,75,74,0.4)' : 'none',
-                    minWidth: 40,
-                  }}>
-                  <span className="text-xs font-bold" style={{ color: '#fff', fontFamily: 'DM Mono, monospace' }}>{item.score}</span>
+              <div style={{ flex: 1, height: 26, borderRadius: 999, background: '#18181C', overflow: 'hidden' }}>
+                <motion.div initial={{ width: 0 }} animate={{ width: mounted ? `${item.score}%` : '0%' }}
+                  transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1], delay: 0.4 + i * 0.07 }}
+                  style={{ height: '100%', borderRadius: 999, minWidth: 36, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 8,
+                    background: item.isYou ? 'linear-gradient(90deg, #C73B3A, #E8453C)' : `linear-gradient(90deg, ${color}60, ${color})`,
+                    boxShadow: item.isYou ? '0 0 12px rgba(232,69,60,0.35)' : 'none' }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: '#fff', fontFamily: 'DM Mono, monospace' }}>{item.score}</span>
                 </motion.div>
               </div>
             </motion.div>
           )
         })}
       </div>
-      <div className="mt-5 pt-4 flex flex-wrap items-center gap-4" style={{ borderTop: '1px solid var(--border)' }}>
-        {[
-          { color: 'var(--accent)', label: 'You' },
-          { color: 'var(--green)', label: '80+ viral' },
-          { color: 'var(--blue)', label: '60–79 good' },
-          { color: 'var(--amber)', label: '40–59 avg' },
-        ].map((l, i) => (
-          <div key={i} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
-            <div className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} /> {l.label}
+
+      <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #242428', display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+        {[['#E8453C','You'],['#1DB87A','80+ Viral'],['#3D8EE8','60–79 Good'],['#C07820','40–59 Avg']].map(([c, l], i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#4A4A58' }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: c }} /> {l}
           </div>
         ))}
       </div>

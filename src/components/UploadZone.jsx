@@ -7,6 +7,8 @@ import { extractVideoFrames, createPreviewURL } from '../lib/imageUtils'
 const VIDEO_MAX = 50 * 1024 * 1024
 const IMAGE_MAX = 10 * 1024 * 1024
 
+const FILE_TYPES = ['MP4', 'MOV', 'JPG', 'PNG', 'WEBP']
+
 export default function UploadZone() {
   const { setFile, setPreviewURL, setVideoFrames, file, previewURL } = useAnalysisStore()
   const [dragging, setDragging] = useState(false)
@@ -43,7 +45,8 @@ export default function UploadZone() {
   }, [setFile, setPreviewURL, setVideoFrames])
 
   const onDrop = useCallback((e) => {
-    e.preventDefault(); setDragging(false)
+    e.preventDefault()
+    setDragging(false)
     const f = e.dataTransfer.files[0]
     if (f) processFile(f)
   }, [processFile])
@@ -56,109 +59,160 @@ export default function UploadZone() {
   const isVideo = file?.type?.startsWith('video/')
 
   return (
-    <div className="w-full">
+    <div style={{ width: '100%' }}>
       <AnimatePresence mode="wait">
         {!file ? (
           <motion.div
             key="dropzone"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
             onClick={() => inputRef.current?.click()}
-            className="relative cursor-pointer rounded-2xl p-10 flex flex-col items-center justify-center gap-5 transition-all duration-300 upload-pulse"
+            className="upload-pulse"
             style={{
-              border: `2px dashed ${dragging ? 'var(--accent)' : 'var(--accent-border)'}`,
-              background: dragging ? 'var(--accent-subtle)' : 'var(--bg-elevated)',
-              minHeight: 260,
+              background: dragging ? 'rgba(232,69,60,0.04)' : '#0D0D10',
+              border: `1.5px dashed ${dragging ? '#E8453C' : '#E8453C'}`,
+              borderRadius: 14,
+              padding: '3rem 2rem',
+              textAlign: 'center',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 20,
+              transition: 'all 0.2s ease',
             }}
           >
-            <input ref={inputRef} type="file" accept=".mp4,.mov,.jpg,.jpeg,.png,.webp"
-              className="hidden" onChange={(e) => { const f = e.target.files[0]; if (f) processFile(f) }} />
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".mp4,.mov,.jpg,.jpeg,.png,.webp"
+              style={{ display: 'none' }}
+              onChange={(e) => { const f = e.target.files[0]; if (f) processFile(f) }}
+            />
 
+            {/* Upload Icon */}
             <motion.div
-              animate={{ scale: dragging ? 1.12 : 1, rotate: dragging ? 8 : 0 }}
+              animate={{ scale: dragging ? 1.1 : 1 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
-              style={{ background: 'var(--accent-subtle)', border: '1px solid var(--accent-border)' }}
+              style={{
+                width: 56, height: 56, borderRadius: 12,
+                background: '#E8453C',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
             >
-              <Upload size={26} color="var(--accent)" />
+              <Upload size={24} color="white" />
             </motion.div>
 
-            <div className="text-center">
-              <p className="text-lg font-bold mb-1.5"
-                style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+            <div>
+              <p style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 18, color: '#EEECEA', marginBottom: 6 }}>
                 {dragging ? 'Drop to analyze' : 'Upload your content'}
               </p>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                Drag & drop or click to browse
-              </p>
-              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-                MP4 · MOV · JPG · PNG · WEBP &nbsp;·&nbsp; Max 50MB video / 10MB image
-              </p>
+              <p style={{ fontSize: 14, color: '#888796' }}>Drag & drop or click to browse</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              {[
-                { icon: <Film size={12} />, label: 'Video', color: 'var(--blue)' },
-                { icon: <ImageIcon size={12} />, label: 'Image', color: 'var(--green)' },
-              ].map((t, i) => (
-                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-                  style={{ background: `${t.color}12`, color: t.color, border: `1px solid ${t.color}25` }}>
-                  {t.icon} {t.label}
-                </div>
+            {/* File type pills */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {FILE_TYPES.map((t) => (
+                <span key={t} style={{
+                  padding: '4px 12px', borderRadius: 999,
+                  fontSize: 11, fontFamily: 'DM Mono, monospace',
+                  background: '#18181C', border: '1px solid #303038', color: '#4A4A58',
+                }}>
+                  {t}
+                </span>
               ))}
+              <span style={{
+                padding: '4px 12px', borderRadius: 999,
+                fontSize: 11, fontFamily: 'DM Mono, monospace',
+                background: '#18181C', border: '1px solid #303038', color: '#4A4A58',
+              }}>
+                Max 50MB
+              </span>
             </div>
 
             {validationError && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm"
-                style={{ background: 'rgba(226,75,74,0.08)', color: 'var(--red)', border: '1px solid var(--accent-border)' }}>
-                <AlertCircle size={14} /> {validationError}
-              </motion.div>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '10px 16px', borderRadius: 10,
+                background: 'rgba(232,69,60,0.08)', border: '1px solid rgba(232,69,60,0.2)',
+                color: '#E8453C', fontSize: 13,
+              }}>
+                <AlertCircle size={13} /> {validationError}
+              </div>
             )}
           </motion.div>
         ) : (
           <motion.div
             key="preview"
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            className="rounded-2xl overflow-hidden relative"
-            style={{ border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+            exit={{ opacity: 0, y: -12 }}
+            style={{
+              borderRadius: 14,
+              overflow: 'hidden',
+              position: 'relative',
+              background: '#0D0D10',
+              border: '1px solid #242428',
+            }}
           >
+            {/* Progress bar */}
             {processing && (
-              <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'var(--border)' }}>
-                <motion.div className="h-full"
-                  style={{ background: 'linear-gradient(90deg, var(--accent-hover), var(--accent))', width: `${progress}%` }}
-                  transition={{ duration: 0.3 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#242428' }}>
+                <div style={{
+                  height: '100%', background: '#E8453C',
+                  width: `${progress}%`, transition: 'width 0.3s ease',
+                }} />
               </div>
             )}
-            <button onClick={removeFile}
-              className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110"
-              style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <X size={13} color="#fff" />
+
+            {/* Remove button */}
+            <button
+              onClick={removeFile}
+              style={{
+                position: 'absolute', top: 12, right: 12, zIndex: 10,
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            >
+              <X size={13} color="#EEECEA" />
             </button>
+
             {isVideo
-              ? <video src={previewURL} controls className="w-full" style={{ maxHeight: 340, background: '#000', display: 'block' }} />
-              : <img src={previewURL} alt="Preview" className="w-full object-contain" style={{ maxHeight: 340, background: 'var(--bg-base)', display: 'block' }} />
+              ? <video src={previewURL} controls style={{ width: '100%', maxHeight: 320, display: 'block', background: '#000' }} />
+              : <img src={previewURL} alt="Preview" style={{ width: '100%', objectFit: 'contain', maxHeight: 320, display: 'block', background: '#0D0D10' }} />
             }
-            <div className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: isVideo ? 'rgba(55,138,221,0.1)' : 'rgba(29,158,117,0.1)' }}>
-                  {isVideo ? <Film size={15} color="var(--blue)" /> : <ImageIcon size={15} color="var(--green)" />}
+
+            <div style={{
+              padding: '12px 16px', display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', background: '#111114',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: isVideo ? 'rgba(61,142,232,0.1)' : 'rgba(29,184,122,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {isVideo
+                    ? <Film size={16} color="#3D8EE8" />
+                    : <ImageIcon size={16} color="#1DB87A" />
+                  }
                 </div>
                 <div>
-                  <p className="text-sm font-medium truncate max-w-[200px]" style={{ color: 'var(--text-primary)' }}>{file.name}</p>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: '#EEECEA', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {file.name}
+                  </p>
+                  <p style={{ fontSize: 11, color: '#4A4A58', fontFamily: 'DM Mono, monospace', marginTop: 2 }}>
                     {(file.size / 1024 / 1024).toFixed(1)} MB · {isVideo ? 'Video' : 'Image'}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--green)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#1DB87A' }}>
                 <CheckCircle2 size={13} /> Ready
               </div>
             </div>

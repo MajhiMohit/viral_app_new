@@ -1,49 +1,49 @@
 export default function ResultsSkeleton() {
-  const Block = ({ h = 'h-4', w = 'w-full', className = '' }) => (
-    <div className={`skeleton ${h} ${w} ${className}`} />
+  const S = ({ h = 20, w = '100%', r = 8 }) => (
+    <div className="skeleton" style={{ height: h, width: w, borderRadius: r }} />
   )
   return (
-    <div className="space-y-6">
-      <div className="rounded-2xl p-8" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-        <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="w-44 h-44 rounded-full skeleton shrink-0" />
-          <div className="flex-1 w-full grid grid-cols-2 gap-4">
-            {[...Array(6)].map((_, i) => <Block key={i} h="h-14" />)}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Score hero */}
+      <div style={{ background: '#111114', border: '1px solid #242428', borderRadius: 20, padding: '2rem' }}>
+        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+          <S h={180} w={180} r={999} />
+          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {[...Array(6)].map((_, i) => <S key={i} h={50} r={10} />)}
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Metric cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rounded-2xl p-5 space-y-3" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-            <div className="flex justify-between"><Block h="h-4" w="w-24" /><Block h="h-4" w="w-8" /></div>
-            <Block h="h-1.5" />
-            <Block h="h-12" />
+          <div key={i} style={{ background: '#111114', border: '1px solid #242428', borderRadius: 16, padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><S h={14} w={80} /><S h={14} w={30} /></div>
+            <S h={3} />
+            <S h={40} />
           </div>
         ))}
       </div>
-      <div className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-        <div className="flex justify-between"><Block h="h-6" w="w-40" /><Block h="h-6" w="w-24" /></div>
-        <Block h="h-1" />
-        <Block h="h-4" />
-        <Block h="h-4" w="w-3/4" />
-        {[...Array(3)].map((_, i) => <Block key={i} h="h-14" />)}
+      {/* Hook */}
+      <div style={{ background: '#111114', border: '1px solid #242428', borderRadius: 20, padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}><S h={20} w={160} /><S h={20} w={80} /></div>
+        <S h={3} />
+        <S h={14} /><S h={14} w="70%" />
+        {[...Array(3)].map((_, i) => <S key={i} h={52} r={12} />)}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Caption + Hashtags */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         {[0, 1].map(i => (
-          <div key={i} className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-            <Block h="h-6" w="w-40" />
-            <Block h="h-24" />
-            <Block h="h-4" />
-            <Block h="h-4" w="w-2/3" />
+          <div key={i} style={{ background: '#111114', border: '1px solid #242428', borderRadius: 20, padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <S h={20} w={140} /><S h={80} /><S h={14} /><S h={14} w="60%" />
           </div>
         ))}
       </div>
-      <div className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-        <Block h="h-6" w="w-48" />
+      {/* Competitor */}
+      <div style={{ background: '#111114', border: '1px solid #242428', borderRadius: 20, padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <S h={20} w={200} />
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4">
-            <Block h="h-4" w="w-32" />
-            <Block h="h-7" className="flex-1" />
+          <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            <S h={14} w={120} /><S h={26} r={999} />
           </div>
         ))}
       </div>
